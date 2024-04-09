@@ -15,7 +15,7 @@ const appRoutes: TRoute[] = [
     element: <HomePage />,
   },
   {
-    path: STORES_ROUTE,
+    path: `${STORES_ROUTE}/*`,
     element: <StoresPage />,
   },
   {
@@ -29,7 +29,7 @@ function App() {
     <Layout>
       <Routes>
         {appRoutes.map(route => {
-          return <Route path={route.path} element={route.element} />;
+          return <Route path={route.path} element={route.element} key={route.path} />;
         })}
         <Route path="*" element={<div>ErroePage</div>} />
       </Routes>
