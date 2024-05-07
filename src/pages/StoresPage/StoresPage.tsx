@@ -1,5 +1,5 @@
-import stores from '../../../data/stores.json';
-import medicines from '../../../data/medicines.json';
+import stores from '@/data/stores.json';
+import medicines from '@/data/medicines.json';
 import { MedecinesList } from '@/components/MedicinesList/MedicinesList';
 import { StoresList } from '@/components/StoresList/StoresList';
 import { Route, Routes } from 'react-router-dom';

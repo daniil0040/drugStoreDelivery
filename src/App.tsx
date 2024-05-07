@@ -1,7 +1,15 @@
 import { Route, Routes } from 'react-router-dom';
 import { ReactNode } from 'react';
 import { CartPage, HomePage, StoresPage } from '@/pages';
-import { HOME_ROUTE, SHOPPING_CART, STORES_ROUTE } from '@/constants';
+import {
+  DASHBOARD_ROUTE,
+  HOME_ROUTE,
+  LOGIN_ROUTE,
+  SETTINGS_ROUTE,
+  SHOPPING_CART_ROUTE,
+  SIGNUP_ROUTE,
+  STORES_ROUTE,
+} from '@/constants';
 import { Layout } from '@/components';
 
 type TRoute = {
@@ -19,7 +27,23 @@ const appRoutes: TRoute[] = [
     element: <StoresPage />,
   },
   {
-    path: SHOPPING_CART,
+    path: SHOPPING_CART_ROUTE,
+    element: <CartPage />,
+  },
+  {
+    path: LOGIN_ROUTE,
+    element: <CartPage />,
+  },
+  {
+    path: SIGNUP_ROUTE,
+    element: <CartPage />,
+  },
+  {
+    path: SETTINGS_ROUTE,
+    element: <CartPage />,
+  },
+  {
+    path: DASHBOARD_ROUTE,
     element: <CartPage />,
   },
 ];
@@ -29,7 +53,9 @@ function App() {
     <Layout>
       <Routes>
         {appRoutes.map(route => {
-          return <Route path={route.path} element={route.element} key={route.path} />;
+          return (
+            <Route path={route.path} element={route.element} key={route.path} />
+          );
         })}
         <Route path="*" element={<div>ErroePage</div>} />
       </Routes>

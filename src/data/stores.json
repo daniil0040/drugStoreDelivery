@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "companyName": "PillCare Solutions",
+    "coordinates": { "lat": 41.8781136, "lng": -87.6297982 },
+    "infoWindow": "Chicago PillCare Solutions"
+  },
+  {
+    "id": 2,
+    "companyName": "BioMed Innovations",
+    "coordinates": { "lat": 36.171563, "lng": -115.1391009 },
+    "infoWindow": "Las Vegas BioMed Innovations"
+  },
+  {
+    "id": 3,
+    "companyName": "PharmaTech Solutions",
+    "coordinates": { "lat": 32.7766642, "lng": -96.79698789999999 },
+    "infoWindow": "Dalas PharmaTech Solutions"
+  },
+  {
+    "id": 4,
+    "companyName": "GlobalMed Research",
+    "coordinates": { "lat": 34.0549076, "lng": -118.242643 },
+    "infoWindow": "Los Angeles GlobalMed Research"
+  }
+]
