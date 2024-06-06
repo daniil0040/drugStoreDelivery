@@ -100,7 +100,10 @@ import {
 } from '@react-google-maps/api';
 import stores from '@/data/stores.json';
 import { useAppDispatch } from '@/app/hooks';
-import { resetCustomerAddress, setCustomerAddress } from '@/redux/cartSlice';
+import {
+  resetCustomerAddress,
+  setCustomerAddress,
+} from '@/redux/cart/cartSlice';
 import { StyledMapContainer, StyledTripInfoContainer } from './Map.styled';
 
 const containerStyle = {

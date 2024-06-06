@@ -1,9 +1,23 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import { cartReducer } from './cartSlice';
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import { cartReducer } from './cart/cartSlice';
+import { modalWindowReducer } from './modalWindow/modalWindowSlice';
+import { authReducer } from './auth/authSlice';
 
 export const store = configureStore({
-  reducer: { cart: cartReducer },
+  reducer: {
+    cart: cartReducer,
+    modalWindow: modalWindowReducer,
+    auth: authReducer,
+  },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {

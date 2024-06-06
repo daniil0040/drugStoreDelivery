@@ -2,7 +2,8 @@
 
 1. LOGIN/SIGNUP page
 2. DASHBOARD page (order list/cards | user list/cards)
-3. SETTINGS page
+3. SETTINGS modal
+   4.User dropdown (settings,dashboard,logout)
 
 -- Sign up and login with:
 
@@ -22,3 +23,7 @@
 -- Ability to cancel order which currently is in a pending status
 
 -- Ability to block user accounts by ADMIN
+
+-- Ability to create an order like a guest
+
+-- Autocomplite if user is loged in or ability login from cart

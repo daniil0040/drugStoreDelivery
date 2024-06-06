@@ -3,7 +3,7 @@ import { MedicineListItem } from '../MedicinesListItem/MedicinesListItem';
 import { useParams } from 'react-router-dom';
 import { SyledList } from './MedicinesList.styled';
 import { useAppDispatch } from '@/app/hooks';
-import { addToCart } from '@/redux/cartSlice';
+import { addToCart } from '@/redux/cart/cartSlice';
 
 type Props = {
   medicines: Medicine[];

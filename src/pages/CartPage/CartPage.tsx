@@ -25,13 +25,13 @@ import {
   addToCart,
   decreaseQuantity,
   removeSingleItem,
-} from '@/redux/cartSlice';
+} from '@/redux/cart/cartSlice';
 import { CartMedicine, Medicine } from '@/types/MedicineType';
 import {
   selectAddress,
   selectSortedByAlphabetItems,
   selectTotalCartPrice,
-} from '@/redux/cartSlice.selectors';
+} from '@/redux/cart/cartSlice.selectors';
 import IconArrow from '@/assets/images/MaterialSymbolsArrowDropDownCircleOutlineRounded.svg?react';
 import { Map } from '@/components';
 import { useEffect, useRef, useState } from 'react';
