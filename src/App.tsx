@@ -11,7 +11,7 @@ import {
 } from '@/constants';
 import { Layout, PrivateRoute, RestrictedRoute } from '@/components';
 import DashboarPage from './pages/DashboardPage/DashboarPage';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './app/firebase';
 import { TUser } from './types/UserType';
