@@ -39,6 +39,7 @@ export const StyledForm = styled.form`
     max-height: 550px;
   }
   .listContainer {
+    min-width: 432px;
     grid-area: list;
     max-height: 550px;
     overflow-y: scroll;
