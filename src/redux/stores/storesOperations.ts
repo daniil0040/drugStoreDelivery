@@ -4,8 +4,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { FirebaseError } from 'firebase/app';
 import {
   collection,
-  doc,
-  getDoc,
+  // doc,
+  // getDoc,
   getDocs,
   query,
   where,

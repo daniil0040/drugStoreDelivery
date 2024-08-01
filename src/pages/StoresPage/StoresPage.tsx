@@ -6,16 +6,16 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useEffect } from 'react';
 import {
   selectStores,
-  selectStoresIsError,
-  selectStoresIsLoading,
+  // selectStoresIsError,
+  // selectStoresIsLoading,
 } from '@/redux/stores/storesSlice.selectors';
 import { apiGetStores } from '@/redux/stores/storesOperations';
 
 const StoresPage = () => {
   const dispatch = useAppDispatch();
   const stores = useAppSelector(selectStores);
-  const isLoading = useAppSelector(selectStoresIsLoading);
-  const isError = useAppSelector(selectStoresIsError);
+  // const isLoading = useAppSelector(selectStoresIsLoading);
+  // const isError = useAppSelector(selectStoresIsError);
 
   useEffect(() => {
     dispatch(apiGetStores());
