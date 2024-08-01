@@ -11,12 +11,14 @@ import {
 import { cartReducer } from './cart/cartSlice';
 import { modalWindowReducer } from './modalWindow/modalWindowSlice';
 import { authReducer } from './auth/authSlice';
+import { storesReducer } from './stores/storesSlice';
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
     modalWindow: modalWindowReducer,
     auth: authReducer,
+    stores: storesReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

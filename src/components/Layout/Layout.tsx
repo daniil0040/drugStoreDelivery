@@ -23,6 +23,8 @@ import { useAppSelector } from '@/app/hooks';
 import { selectIsModalOpen } from '@/redux/modalWindow/modalWindow.selectors';
 import {
   selectAuthenticated,
+  selectIsLoading,
+  selectIsRefreshing,
   selectUserData,
 } from '@/redux/auth/authSelectors';
 
@@ -36,6 +38,8 @@ export const Layout = ({ children }: LayoutProps) => {
   const isModalOpen = useAppSelector(selectIsModalOpen);
   const isAuthenticated = useAppSelector(selectAuthenticated);
   const userData = useAppSelector(selectUserData);
+  const isLoading = useAppSelector(selectIsLoading);
+  const isRefreshing = useAppSelector(selectIsRefreshing);
 
   const handleMouseEnter = () => {
     setIsHovering(true);
@@ -75,7 +79,6 @@ export const Layout = ({ children }: LayoutProps) => {
     window.addEventListener('click', handleClick);
     return () => window.removeEventListener('click', handleClick);
   }, [isHovering, isDropdownClicked]);
-
   return (
     <LayoutContainer>
       <StyledHeader>
@@ -85,7 +88,7 @@ export const Layout = ({ children }: LayoutProps) => {
         {!isAuthenticated ? (
           <>
             <StyledNavLink to={LOGIN_ROUTE}>Login</StyledNavLink>
-            <StyledNavLink to={SIGNUP_ROUTE}>SIGNUP</StyledNavLink>{' '}
+            <StyledNavLink to={SIGNUP_ROUTE}>Signup</StyledNavLink>{' '}
           </>
         ) : (
           <div
@@ -94,18 +97,20 @@ export const Layout = ({ children }: LayoutProps) => {
               display: 'flex',
             }}
           >
-            <StyledUserInfoContainer>
-              <StyledUserName>{userData?.displayName}</StyledUserName>
-              {userData?.photoURL ? (
-                <StyledUserImg
-                  src={userData?.photoURL}
-                  width={'32px'}
-                  height={'32px'}
-                />
-              ) : (
-                <UserIcon width={'32px'} height={'32px'} />
-              )}
-            </StyledUserInfoContainer>
+            {!isLoading && !isRefreshing && userData && (
+              <StyledUserInfoContainer>
+                <StyledUserName>{userData?.displayName}</StyledUserName>
+                {userData?.photoURL ? (
+                  <StyledUserImg
+                    src={userData?.photoURL}
+                    width={'32px'}
+                    height={'32px'}
+                  />
+                ) : (
+                  <UserIcon width={'32px'} height={'32px'} />
+                )}
+              </StyledUserInfoContainer>
+            )}
             <div
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}

@@ -35,6 +35,11 @@ import {
 import IconArrow from '@/assets/images/MaterialSymbolsArrowDropDownCircleOutlineRounded.svg?react';
 import { Map } from '@/components';
 import { useEffect, useRef, useState } from 'react';
+import { selectUserData } from '@/redux/auth/authSelectors';
+import { TOrder } from '@/types';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/app/firebase';
+import toast from 'react-hot-toast';
 
 type Values = {
   name: string;
@@ -51,7 +56,10 @@ type TCartListItemProps = {
 const CartPage = () => {
   const totalPrice = useAppSelector(selectTotalCartPrice);
   const captchaRef = useRef<ReCAPTCHA | null>(null);
-  const [captchaErr, setCaptchaErr] = useState<boolean>(false);
+  const [captchaErr, setCaptchaErr] = useState<boolean | null>(null);
+  const userData = useAppSelector(selectUserData);
+  const address = useAppSelector(selectAddress);
+  const items = useAppSelector(selectSortedByAlphabetItems);
 
   const {
     register,
@@ -59,17 +67,55 @@ const CartPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Values>();
-  const onSubmit = (data: Values): void => {
+  const onSubmit = async (data: Values): Promise<void> => {
     const token = captchaRef?.current?.getValue();
-    console.log(token);
     if (!token) {
       setCaptchaErr(true);
       return;
     }
     console.log(data);
+
+    if (!userData) return;
+
+    const finalData: TOrder = {
+      userName: data.name,
+      userEmail: data.email,
+      userAddress: data.address,
+      userPhone: data.phone,
+      userUid: userData?.uid,
+      totalPrice: totalPrice,
+      orderItems: items.map(item => {
+        return {
+          id: item.id,
+          name: item.medicineTitle,
+          pharmacyId: item.pharmacy,
+          quantity: item.quantity,
+          price: item.price,
+        };
+      }),
+    };
+    const ordersRef = collection(db, 'orders');
+    await addDoc(ordersRef, finalData);
+    toast.success('Succesfully ordered!');
     setCaptchaErr(false);
     captchaRef?.current?.reset();
   };
+
+  useEffect(() => {
+    setValue('address', address);
+  }, [address]);
+
+  useEffect(() => {
+    if (userData?.displayName) {
+      setValue('name', userData?.displayName);
+    }
+    if (userData?.email) {
+      setValue('email', userData?.email);
+    }
+    if (userData?.phoneNumber) {
+      setValue('phone', userData?.phoneNumber);
+    }
+  }, [userData]);
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -79,6 +125,7 @@ const CartPage = () => {
         <ReCAPTCHA
           sitekey="6LdOxNApAAAAAKcmHWhxeSmfYz-m9nDAH0iZ6PBo"
           ref={captchaRef}
+          onChange={() => setCaptchaErr(false)}
         />
         {captchaErr && (
           <StyledCaptchaErr style={{ color: 'red' }}>
@@ -86,8 +133,14 @@ const CartPage = () => {
           </StyledCaptchaErr>
         )}
         <StyledSubmitContainer>
-          <span style={{ cursor: 'default' }}>Total price:{totalPrice}$</span>
-          <button type="submit" style={{ cursor: 'pointer' }}>
+          <span style={{ cursor: 'default' }}>
+            Total price:{totalPrice.toFixed(2)}$
+          </span>
+          <button
+            type="submit"
+            style={{ cursor: 'pointer' }}
+            disabled={captchaErr === null || captchaErr}
+          >
             Submit
           </button>
         </StyledSubmitContainer>
@@ -99,18 +152,11 @@ const CartPage = () => {
 const CartForm = ({
   register,
   errors,
-  setValue,
 }: {
   register: UseFormRegister<Values>;
   errors: FieldErrors<Values>;
   setValue: UseFormSetValue<Values>;
 }) => {
-  const address = useAppSelector(selectAddress);
-
-  useEffect(() => {
-    setValue('address', address);
-  }, [address]);
-
   return (
     <StyledFormContainer className="formContainer">
       <StyledInputsContainer>
@@ -147,7 +193,6 @@ const CartForm = ({
             type="text"
             {...register('address', { required: 'this field is required' })}
             disabled
-            //  value={address}
             placeholder="Select address on Google Maps"
           />
           {errors.address && <p>{errors.address?.message}</p>}
@@ -173,10 +218,10 @@ const CartList = () => {
 
 const CartListItem = ({ item }: TCartListItemProps) => {
   const dispatch = useAppDispatch();
-  const handleRemoveItem = (itemId: number) =>
+  const handleRemoveItem = (itemId: string) =>
     dispatch(removeSingleItem(itemId));
   const handleIncreaseQuantity = (item: Medicine) => dispatch(addToCart(item));
-  const handleDecreaseQuantity = (itemId: number) =>
+  const handleDecreaseQuantity = (itemId: string) =>
     dispatch(decreaseQuantity(itemId));
 
   return (

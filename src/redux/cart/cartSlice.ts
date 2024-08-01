@@ -36,12 +36,12 @@ export const cartSlice = createSlice({
         state.cartItems.push({ ...payload, quantity: 1 });
       }
     },
-    removeSingleItem: (state, { payload }: PayloadAction<number>) => {
+    removeSingleItem: (state, { payload }: PayloadAction<string>) => {
       state.cartItems = state.cartItems.filter(item => {
         return item.id !== payload;
       });
     },
-    decreaseQuantity: (state, { payload }: PayloadAction<number>) => {
+    decreaseQuantity: (state, { payload }: PayloadAction<string>) => {
       const isLastItem = state.cartItems.some(item => {
         if (item.id === payload) {
           return item.quantity === 1;

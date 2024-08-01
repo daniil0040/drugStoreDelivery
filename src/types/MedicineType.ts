@@ -1,5 +1,5 @@
 export type Medicine = {
-  id: number;
+  id: string;
   medicineTitle: string;
   pharmacy: string;
   price: number;

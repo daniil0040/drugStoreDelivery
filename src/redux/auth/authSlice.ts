@@ -1,9 +1,11 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import {
   apiLoginWithEmail,
+  apiLoginWithGitHub,
+  apiLoginWithGoogle,
   apiSignoutUser,
   apiSignupWithEmail,
-  apiSignupWithGoogle,
+  apiVerificationWithPhone,
 } from './authOperations';
 import { TUser } from '@/types/UserType';
 
@@ -36,30 +38,10 @@ const authSlice = createSlice({
   },
   extraReducers: builder =>
     builder
-      .addCase(apiSignupWithEmail.pending, state => {
-        state.isLoading = true;
-      })
       .addCase(apiSignupWithEmail.fulfilled, (state, action) => {
         state.authenticated = true;
         state.userData = action.payload;
         state.isLoading = false;
-      })
-      .addCase(apiSignupWithEmail.rejected, state => {
-        state.isLoading = false;
-      })
-      .addCase(apiSignupWithGoogle.pending, state => {
-        state.isLoading = true;
-      })
-      .addCase(apiSignupWithGoogle.fulfilled, (state, action) => {
-        state.authenticated = true;
-        state.userData = action.payload;
-        state.isLoading = false;
-      })
-      .addCase(apiSignupWithGoogle.rejected, state => {
-        state.isLoading = false;
-      })
-      .addCase(apiLoginWithEmail.pending, state => {
-        state.isLoading = true;
       })
       .addCase(
         apiLoginWithEmail.fulfilled,
@@ -69,20 +51,61 @@ const authSlice = createSlice({
           state.isLoading = false;
         },
       )
-      .addCase(apiLoginWithEmail.rejected, state => {
-        state.isLoading = false;
-      })
-      .addCase(apiSignoutUser.pending, state => {
-        state.isLoading = true;
-      })
       .addCase(apiSignoutUser.fulfilled, state => {
         state.authenticated = false;
         state.userData = null;
         state.isLoading = false;
       })
-      .addCase(apiSignoutUser.rejected, state => {
-        state.isLoading = false;
-      }),
+      .addCase(
+        apiLoginWithGitHub.fulfilled,
+        (state, action: PayloadAction<TUser>) => {
+          state.authenticated = true;
+          state.userData = action.payload;
+          state.isLoading = false;
+        },
+      )
+      .addCase(
+        apiLoginWithGoogle.fulfilled,
+        (state, action: PayloadAction<TUser>) => {
+          state.authenticated = true;
+          state.userData = action.payload;
+          state.isLoading = false;
+        },
+      )
+      .addCase(
+        apiVerificationWithPhone.fulfilled,
+        (state, action: PayloadAction<TUser>) => {
+          state.authenticated = true;
+          state.userData = action.payload;
+          state.isLoading = false;
+        },
+      )
+      .addMatcher(
+        isAnyOf(
+          apiSignoutUser.pending,
+          apiSignupWithEmail.pending,
+          apiLoginWithEmail.pending,
+          apiLoginWithGitHub.pending,
+          apiLoginWithGoogle.pending,
+          apiVerificationWithPhone.pending,
+        ),
+        state => {
+          state.isLoading = true;
+        },
+      )
+      .addMatcher(
+        isAnyOf(
+          apiSignupWithEmail.rejected,
+          apiLoginWithEmail.rejected,
+          apiSignoutUser.rejected,
+          apiLoginWithGoogle.rejected,
+          apiLoginWithGitHub.rejected,
+          apiVerificationWithPhone.rejected,
+        ),
+        state => {
+          state.isLoading = false;
+        },
+      ),
 });
 
 export const authReducer = authSlice.reducer;

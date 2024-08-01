@@ -67,15 +67,14 @@ const appRoutes: TRoute[] = [
 function App() {
   const dispatch = useAppDispatch();
   const isRefreshing = useAppSelector(selectIsRefreshing);
-  console.log('isRefreshing');
   useEffect(() => {
     const listener = onAuthStateChanged(auth, async user => {
       if (user) {
-        console.log(user);
         const docRef = doc(db, 'users', user.uid);
         const serializedUserData = (await getDoc(docRef)).data() as TUser;
         dispatch(setAuth(serializedUserData));
-        toast.success(`Hello, ${serializedUserData.displayName}`);
+        if (serializedUserData?.displayName)
+          toast.success(`Hello, ${serializedUserData?.displayName}`);
       }
       dispatch(setRefreshing(false));
     });

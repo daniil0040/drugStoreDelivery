@@ -1,18 +1,18 @@
 -- Markup:
 
-1. LOGIN/SIGNUP page
+1. LOGIN/SIGNUP page ✅
 2. DASHBOARD page (order list/cards | user list/cards)
-3. SETTINGS modal
-   4.User dropdown (settings,dashboard,logout)
+3. SETTINGS modal ✅
+   4.User dropdown (settings,dashboard,logout) ✅
 
 -- Sign up and login with:
 
-1. Email and password
-   2.Google
-   3.GitHub
-   4.? phone number with sms
+1. Email and password ✅
+   2.Google ✅
+   3.GitHub ✅
+   4.? phone number with sms ✅
 
--- Firestore DB with ability save and manage accounts and orders
+-- Firestore DB with ability save and manage accounts✅ and orders ✅
 
 -- Add users roles as [ADMIN,USER]
 
@@ -26,4 +26,14 @@
 
 -- Ability to create an order like a guest
 
--- Autocomplite if user is loged in or ability login from cart
+-- Autocomplete if user is loged in or ability login from cart
+
+-- Add roles and phone number to DB ✅
+
+-- Ability to add phone number
+
+-- Get and display pharmacies and reletive medicines from DB ✅
+
+-- Show stores on the map just if medicines from that stores in the cart
+
+-- Connect cart directly to user account
