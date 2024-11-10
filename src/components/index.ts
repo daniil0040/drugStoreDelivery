@@ -10,3 +10,5 @@ export { StoresList } from './StoresList/StoresList';
 export { StoresListItem } from './StoresListItem/StoresListItem';
 export { UserDropdown } from './UserDropdown/UserDropdown';
 export { Header } from './Header/Header';
+export { FilterCheckBlock } from './FilterCheckBlock/FilterCheckBlock';
+export { SearchBar } from './SearchBar/SearchBar';
