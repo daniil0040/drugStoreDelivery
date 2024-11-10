@@ -1,5 +1,5 @@
 import { DASHBOARD_ROUTE, LOGIN_ROUTE } from '@/constants';
-import { StyledNavLink } from '../Layout/Layout.styled';
+import { StyledNavLink } from '../Header/Header.styled';
 import {
   StyledDropdownContainer,
   StyledDropdownList,
@@ -40,7 +40,7 @@ export const UserDropdown = ({
   };
 
   const onSettingsClick = () => {
-    dispatch(openModalWindow());
+    dispatch(openModalWindow('user-settings-modal'));
     handleDropdownClose();
   };
 

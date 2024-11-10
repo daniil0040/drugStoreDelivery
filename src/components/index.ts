@@ -9,3 +9,4 @@ export { RestrictedRoute } from './RestrictedRoute';
 export { StoresList } from './StoresList/StoresList';
 export { StoresListItem } from './StoresListItem/StoresListItem';
 export { UserDropdown } from './UserDropdown/UserDropdown';
+export { Header } from './Header/Header';

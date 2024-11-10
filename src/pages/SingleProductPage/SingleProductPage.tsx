@@ -11,11 +11,11 @@ import {
 import { db } from '@/app/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { Medicine } from '@/types';
-import {
-  GalerySkeletonLoader,
-  SingleProductInfoSkeletonLoader,
-  SingleProductMainInfoSkeletonLoader,
-} from '@/components';
+// import {
+//   GalerySkeletonLoader,
+//   SingleProductInfoSkeletonLoader,
+//   SingleProductMainInfoSkeletonLoader,
+// } from '@/components';
 type Props = {};
 type Params = {
   productID: string;
@@ -487,9 +487,8 @@ export const SingleProductPage = (props: Props) => {
     <div>
       <NavLink to={backLinkRef.current}>Back</NavLink>
       <StyledMainInfoContainer>
-        {loading ? (
-          <GalerySkeletonLoader />
-        ) : (
+        {loading ? // <GalerySkeletonLoader />
+        null : (
           <StyledGalleryWrapper>
             <ImageGallery
               items={images}
@@ -499,9 +498,8 @@ export const SingleProductPage = (props: Props) => {
             />
           </StyledGalleryWrapper>
         )}
-        {loading ? (
-          <SingleProductMainInfoSkeletonLoader />
-        ) : (
+        {loading ? // <SingleProductMainInfoSkeletonLoader />
+        null : (
           <div className="contentInfo">
             <h1 className="contentInfoName">{medicine?.tradeName}</h1>
             <p className="contentInfoPrice">${medicine?.price}</p>
@@ -515,9 +513,8 @@ export const SingleProductPage = (props: Props) => {
           </div>
         )}
       </StyledMainInfoContainer>
-      {loading ? (
-        <SingleProductInfoSkeletonLoader />
-      ) : (
+      {loading ? // <SingleProductInfoSkeletonLoader />
+      null : (
         <StyledFeaturesContainer>
           <h2 className="featuresTitle">Features</h2>
           <ul className="list">
