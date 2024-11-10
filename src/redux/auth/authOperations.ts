@@ -1,8 +1,8 @@
-import { auth, db } from '@/app/firebase';
+import { auth, db, storage } from '@/app/firebase';
 import { UserRoles } from '@/constants';
-import { LoginInputs, SignupInputs } from '@/types/FormType';
+import { LoginInputs, SignupInputs, TSettingsValues } from '@/types/FormType';
 import { TUser } from '@/types/UserType';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, nanoid } from '@reduxjs/toolkit';
 import { FirebaseError } from 'firebase/app';
 import {
   ConfirmationResult,
@@ -14,8 +14,10 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import toast from 'react-hot-toast';
+import { RootState } from '../store';
 
 export const apiSignupWithEmail = createAsyncThunk<
   TUser,
@@ -30,7 +32,6 @@ export const apiSignupWithEmail = createAsyncThunk<
     );
     // Signed up
     const user = userCredential.user;
-    console.log(user);
     const serializableUserData: TUser = {
       uid: user.uid,
       email: user.email,
@@ -216,7 +217,7 @@ export const apiSignoutUser = createAsyncThunk<
   void,
   void,
   { rejectValue: string }
->('auth/SignoutUser', async (_, thunkAPI) => {
+>('auth/signoutUser', async (_, thunkAPI) => {
   try {
     await signOut(auth);
     return;
@@ -229,3 +230,52 @@ export const apiSignoutUser = createAsyncThunk<
     throw error;
   }
 });
+
+export const apiUpdateUserInfo = createAsyncThunk<
+  Partial<TUser>,
+  TSettingsValues,
+  { rejectValue: string }
+>(
+  'auth/updateUserInfo',
+  async ({ phoneNumber, displayName, photoFile }, thunkAPI) => {
+    const user = (thunkAPI.getState() as RootState).auth.userData as TUser;
+    try {
+      const storageRef = ref(storage, `images/${nanoid(10) + displayName}`);
+      const uploadTask = uploadBytesResumable(storageRef, photoFile as Blob);
+
+      const downloadURL = await new Promise<string>((resolve, reject) => {
+        uploadTask.on('state_changed', null, null, async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            await updateDoc(doc(db, 'users', user.uid), {
+              displayName,
+              photoURL: downloadURL,
+              phoneNumber,
+            });
+            // await updateProfile(user, {
+            //   photoURL: downloadURL,
+            //   displayName,
+            // });
+
+            resolve(downloadURL);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+      const serializableUserData: Partial<TUser> = {
+        phoneNumber,
+        displayName,
+        photoURL: downloadURL,
+      };
+      return serializableUserData;
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        const errorMessage = error.message;
+        toast.error(errorMessage);
+        return thunkAPI.rejectWithValue(errorMessage);
+      }
+      throw error;
+    }
+  },
+);

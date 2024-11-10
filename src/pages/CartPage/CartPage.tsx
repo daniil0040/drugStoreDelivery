@@ -33,21 +33,20 @@ import {
   selectTotalCartPrice,
 } from '@/redux/cart/cartSlice.selectors';
 import IconArrow from '@/assets/images/MaterialSymbolsArrowDropDownCircleOutlineRounded.svg?react';
-import { Map } from '@/components';
+import { Map, ModalWindow } from '@/components';
 import { useEffect, useRef, useState } from 'react';
 import { selectUserData } from '@/redux/auth/authSelectors';
-import { TOrder } from '@/types';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '@/app/firebase';
 import toast from 'react-hot-toast';
-
-type Values = {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  recaptcha: string;
-};
+import { createOrder } from '@/redux/orders/orderSlice.operations';
+import { CreateOrderValues } from '@/types/FormType';
+import { apiUpdateCartForLoggedUser } from '@/redux/cart/cartSlice.operations';
+import {
+  closeModalWindow,
+  openModalWindow,
+} from '@/redux/modalWindow/modalWindowSlice';
+import { selectIsGuestSubmitCartModalOpen } from '@/redux/modalWindow/modalWindow.selectors';
+import { useNavigate } from 'react-router-dom';
+import { SIGNUP_ROUTE } from '@/constants';
 
 type TCartListItemProps = {
   item: CartMedicine;
@@ -57,48 +56,39 @@ const CartPage = () => {
   const totalPrice = useAppSelector(selectTotalCartPrice);
   const captchaRef = useRef<ReCAPTCHA | null>(null);
   const [captchaErr, setCaptchaErr] = useState<boolean | null>(null);
+  const [formData, setFormData] = useState<CreateOrderValues | null>(null);
   const userData = useAppSelector(selectUserData);
   const address = useAppSelector(selectAddress);
   const items = useAppSelector(selectSortedByAlphabetItems);
+  const isGuestSubmitCartModalOpen = useAppSelector(
+    selectIsGuestSubmitCartModalOpen,
+  );
+  const dispatch = useAppDispatch();
 
   const {
     register,
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<Values>();
-  const onSubmit = async (data: Values): Promise<void> => {
+  } = useForm<CreateOrderValues>();
+  const onSubmit = async (data: CreateOrderValues): Promise<void> => {
+    setFormData(data);
     const token = captchaRef?.current?.getValue();
     if (!token) {
       setCaptchaErr(true);
       return;
     }
-    console.log(data);
+    if (!userData) {
+      dispatch(openModalWindow('guest-submit-cart-modal'));
+      return;
+    }
 
-    if (!userData) return;
+    dispatch(createOrder({ formData: data, userData, items, totalPrice }));
 
-    const finalData: TOrder = {
-      userName: data.name,
-      userEmail: data.email,
-      userAddress: data.address,
-      userPhone: data.phone,
-      userUid: userData?.uid,
-      totalPrice: totalPrice,
-      orderItems: items.map(item => {
-        return {
-          id: item.id,
-          name: item.medicineTitle,
-          pharmacyId: item.pharmacy,
-          quantity: item.quantity,
-          price: item.price,
-        };
-      }),
-    };
-    const ordersRef = collection(db, 'orders');
-    await addDoc(ordersRef, finalData);
     toast.success('Succesfully ordered!');
     setCaptchaErr(false);
     captchaRef?.current?.reset();
+    setFormData(null);
   };
 
   useEffect(() => {
@@ -116,6 +106,26 @@ const CartPage = () => {
       setValue('phone', userData?.phoneNumber);
     }
   }, [userData]);
+
+  useEffect(() => {
+    if (!userData) {
+      return;
+    }
+    dispatch(apiUpdateCartForLoggedUser(items));
+  }, [items]);
+
+  const onCreateGuestOrder = () => {
+    if (formData === null) {
+      return;
+    }
+    dispatch(createOrder({ formData, userData: null, items, totalPrice }));
+
+    toast.success('Succesfully ordered!');
+    setCaptchaErr(false);
+    captchaRef?.current?.reset();
+    setFormData(null);
+    dispatch(closeModalWindow('guest-submit-cart-modal'));
+  };
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -145,6 +155,9 @@ const CartPage = () => {
           </button>
         </StyledSubmitContainer>
       </div>
+      {isGuestSubmitCartModalOpen && (
+        <GuestSubmitCartModal onCreateGuestOrder={onCreateGuestOrder} />
+      )}
     </StyledForm>
   );
 };
@@ -153,9 +166,9 @@ const CartForm = ({
   register,
   errors,
 }: {
-  register: UseFormRegister<Values>;
-  errors: FieldErrors<Values>;
-  setValue: UseFormSetValue<Values>;
+  register: UseFormRegister<CreateOrderValues>;
+  errors: FieldErrors<CreateOrderValues>;
+  setValue: UseFormSetValue<CreateOrderValues>;
 }) => {
   return (
     <StyledFormContainer className="formContainer">
@@ -242,7 +255,7 @@ const CartListItem = ({ item }: TCartListItemProps) => {
             handleIncreaseQuantity({
               id: item.id,
               medicineTitle: item.medicineTitle,
-              pharmacy: item.pharmacy,
+              pharmacies: item.pharmacies,
               price: item.price,
             } as Medicine)
           }
@@ -259,6 +272,30 @@ const CartListItem = ({ item }: TCartListItemProps) => {
         </StyledListItemQuantityBtn>
       </StyledListItemQuantityWrapper>
     </StyledListItem>
+  );
+};
+
+const GuestSubmitCartModal = ({ onCreateGuestOrder }) => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  return (
+    <ModalWindow modalId="guest-submit-cart-modal">
+      <ul>
+        <li>
+          <button onClick={onCreateGuestOrder}>Continue as a guest</button>
+        </li>
+        <li>
+          <button
+            onClick={() => {
+              navigate(SIGNUP_ROUTE);
+              dispatch(closeModalWindow('guest-submit-cart-modal'));
+            }}
+          >
+            Signup
+          </button>
+        </li>
+      </ul>
+    </ModalWindow>
   );
 };
 

@@ -7,4 +7,7 @@ export const selectStoresIsError = (state: RootState) => state.stores.isError;
 export const selectStoresIsLoading = (state: RootState) =>
   state.stores.isLoading;
 
+export const selectMedicinesByPharmacy = (state: RootState) =>
+  state.stores.medicinesByPharmacy;
+
 export const selectMedicines = (state: RootState) => state.stores.medicines;

@@ -7,15 +7,19 @@ import { persistor, store } from './redux/store.ts';
 import { PersistGate } from 'redux-persist/integration/react';
 import { GlobalStyles } from './GlobalStyles.ts';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './assets/theme.ts';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <App />
-          <GlobalStyles />
-          <Toaster />
+          <ThemeProvider theme={theme}>
+            <App />
+            <GlobalStyles />
+            <Toaster />
+          </ThemeProvider>
         </BrowserRouter>
       </PersistGate>
     </Provider>

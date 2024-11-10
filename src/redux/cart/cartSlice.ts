@@ -3,15 +3,21 @@ import { createSlice } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import type { PayloadAction } from '@reduxjs/toolkit';
+import {
+  apiCreateCartForLoggedUser,
+  apiUpdateCartForLoggedUser,
+} from './cartSlice.operations';
 
 export type TCartState = {
   cartItems: CartMedicine[];
   address: string;
+  status: 'idle' | 'success' | 'error' | 'pending';
 };
 
 const initialState: TCartState = {
   cartItems: [],
   address: '',
+  status: 'idle',
 };
 
 const persistConfig = {
@@ -24,7 +30,14 @@ export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart: (state, { payload }: PayloadAction<Medicine>) => {
+    addToCart: (
+      state,
+      {
+        payload,
+      }: PayloadAction<
+        Pick<Medicine, 'id' | 'medicineTitle' | 'price' | 'pharmacies'>
+      >,
+    ) => {
       if (state.cartItems.some(item => item.id === payload.id)) {
         state.cartItems = state.cartItems.map(item => {
           if (item.id === payload.id) {
@@ -70,6 +83,28 @@ export const cartSlice = createSlice({
     resetCustomerAddress: state => {
       state.address = '';
     },
+    resetCart: () => {
+      return initialState;
+    },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(apiCreateCartForLoggedUser.pending, state => {
+        state.status = 'pending';
+      })
+      .addCase(apiCreateCartForLoggedUser.fulfilled, (state, action) => {
+        state.status = action.payload.status;
+        state.cartItems = action.payload.items;
+      })
+      .addCase(apiCreateCartForLoggedUser.rejected, state => {
+        state.status = 'error';
+      })
+      .addCase(apiUpdateCartForLoggedUser.pending, state => {
+        state.status = 'pending';
+      })
+      .addCase(apiUpdateCartForLoggedUser.fulfilled, state => {
+        state.status = 'success';
+      });
   },
 });
 
@@ -81,4 +116,5 @@ export const {
   decreaseQuantity,
   setCustomerAddress,
   resetCustomerAddress,
+  resetCart,
 } = cartSlice.actions;

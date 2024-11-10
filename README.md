@@ -16,24 +16,26 @@
 
 -- Add users roles as [ADMIN,USER]
 
--- Personal settings profile with ability change name and avatar
+-- Personal settings profile with ability change name and avatar ✅
 
--- Ability to view and manage personal orders by USER and view and manage all orders by ADMIN
+-- Ability to view and manage personal orders by USER ✅ and view and manage all orders by ADMIN
 
--- Ability to cancel order which currently is in a pending status
+-- Ability to cancel order which currently is in a pending status ✅
 
 -- Ability to block user accounts by ADMIN
 
--- Ability to create an order like a guest
+-- Ability to create an order like a guest✅
 
--- Autocomplete if user is loged in or ability login from cart
+-- Autocomplete if user is loged in✅ or ability login from cart
 
 -- Add roles and phone number to DB ✅
 
--- Ability to add phone number
+-- Ability to add phone number✅
 
 -- Get and display pharmacies and reletive medicines from DB ✅
 
 -- Show stores on the map just if medicines from that stores in the cart
 
--- Connect cart directly to user account
+-- Connect cart directly to user account ✅
+
+-- Add fonts into the project

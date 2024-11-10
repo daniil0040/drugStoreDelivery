@@ -12,6 +12,7 @@ import { cartReducer } from './cart/cartSlice';
 import { modalWindowReducer } from './modalWindow/modalWindowSlice';
 import { authReducer } from './auth/authSlice';
 import { storesReducer } from './stores/storesSlice';
+import { ordersReducer } from './orders/ordersSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     modalWindow: modalWindowReducer,
     auth: authReducer,
     stores: storesReducer,
+    orders: ordersReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

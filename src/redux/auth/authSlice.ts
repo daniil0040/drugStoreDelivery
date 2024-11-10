@@ -5,6 +5,7 @@ import {
   apiLoginWithGoogle,
   apiSignoutUser,
   apiSignupWithEmail,
+  apiUpdateUserInfo,
   apiVerificationWithPhone,
 } from './authOperations';
 import { TUser } from '@/types/UserType';
@@ -80,6 +81,15 @@ const authSlice = createSlice({
           state.isLoading = false;
         },
       )
+      .addCase(
+        apiUpdateUserInfo.fulfilled,
+        (state, action: PayloadAction<Partial<TUser>>) => {
+          if (state.userData) {
+            state.userData = { ...state.userData, ...action.payload };
+          }
+          state.isLoading = false;
+        },
+      )
       .addMatcher(
         isAnyOf(
           apiSignoutUser.pending,
@@ -88,6 +98,7 @@ const authSlice = createSlice({
           apiLoginWithGitHub.pending,
           apiLoginWithGoogle.pending,
           apiVerificationWithPhone.pending,
+          apiUpdateUserInfo.pending,
         ),
         state => {
           state.isLoading = true;
@@ -101,6 +112,7 @@ const authSlice = createSlice({
           apiLoginWithGoogle.rejected,
           apiLoginWithGitHub.rejected,
           apiVerificationWithPhone.rejected,
+          apiUpdateUserInfo.rejected,
         ),
         state => {
           state.isLoading = false;

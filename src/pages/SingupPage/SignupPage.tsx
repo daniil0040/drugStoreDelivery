@@ -4,6 +4,7 @@ import {
   apiLoginWithEmail,
   apiLoginWithGitHub,
   apiLoginWithGoogle,
+  apiSignupWithEmail,
   apiSignupWithPhoneNumber,
   apiVerificationWithPhone,
 } from '@/redux/auth/authOperations';
@@ -35,8 +36,14 @@ const SignupPage = (props: Props) => {
 
   const onSubmit: SubmitHandler<SignupInputs> = async data => {
     if (signupMethod === 'email') {
-      setActiveRequest(true);
-      await dispatch(apiLoginWithEmail(data)).unwrap();
+      try {
+        setActiveRequest(true);
+        await dispatch(apiSignupWithEmail(data)).unwrap();
+      } catch (error) {
+        if (typeof error === 'string') toast.error(error);
+      } finally {
+        setActiveRequest(false);
+      }
     }
     if (signupMethod === 'phone') {
       if (data.phone) {
@@ -50,6 +57,7 @@ const SignupPage = (props: Props) => {
           if (typeof error === 'string') toast.error(error);
         } finally {
           setActiveRequest(false);
+          console.log('nj');
         }
       }
     }
