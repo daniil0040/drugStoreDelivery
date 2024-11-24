@@ -1,7 +1,6 @@
 import { useSearchParamsState } from '@/hooks';
 import MagnifyingGlass from '../../assets/images/magnifying-glass-icon.svg?react';
 import { StyledSearchBarContainer } from './SearchBar.styled';
-import { FormEvent } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 type Props = {};

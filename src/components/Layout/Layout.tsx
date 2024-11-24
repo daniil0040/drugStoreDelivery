@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import { LayoutContainer } from './Layout.styled';
 import { Header } from '@/components';
 // import { selectIsModalOpen } from '@/redux/modalWindow/modalWindow.selectors';
